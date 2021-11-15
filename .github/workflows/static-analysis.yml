@@ -31,11 +31,15 @@ jobs:
           only_warn: true
           sarif_upload: true
 
-# Can only upload one SARIF
-#       - name: Upload Terrascan SARIF file
-#         uses: github/codeql-action/upload-sarif@v1
-#         with:
-#           sarif_file: terrascan.sarif
+      - name: Upload Terrascan SARIF file
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: terrascan.sarif
+
+
+      - name: Run Checkov action
+        id: checkov
+        uses: bridgecrewio/checkov-action@master
 
       - uses: terraform-linters/setup-tflint@v1
         name: Setup TFLint

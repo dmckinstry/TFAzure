@@ -1,0 +1,22 @@
+name: Static Analysis
+on:
+  workflow_dispatch:
+    
+jobs:
+  analyze-terraform:
+    name: Terraform static analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@master
+
+      - name: tfsec static analysis
+        uses: tfsec/tfsec-sarif-action@master
+        with:
+          sarif_file: tfsec.sarif          
+
+      - name: Upload TFSEC SARIF file
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: tfsec.sarif

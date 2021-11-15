@@ -11,7 +11,7 @@ jobs:
       - name: Clone repo
         uses: actions/checkout@master
 
-      - name: tfsec static analysis
+      - name: Static analysis - TFSEC
         uses: tfsec/tfsec-sarif-action@master
         with:
           sarif_file: tfsec.sarif          
@@ -20,3 +20,30 @@ jobs:
         uses: github/codeql-action/upload-sarif@v1
         with:
           sarif_file: tfsec.sarif
+
+      - name: Run Terrascan
+        id: terrascan
+        uses: accurics/terrascan-action@main
+        with:
+          iac_type: 'terraform'
+          iac_version: 'v14'
+          policy_type: 'azure'
+          only_warn: true
+          sarif_upload: true
+
+# Can only upload one SARIF
+#       - name: Upload Terrascan SARIF file
+#         uses: github/codeql-action/upload-sarif@v1
+#         with:
+#           sarif_file: terrascan.sarif
+
+      - uses: terraform-linters/setup-tflint@v1
+        name: Setup TFLint
+        with:
+          tflint_version: v0.29.0
+
+      - name: Init TFLint
+        run: tflint --init
+
+      - name: Run TFLint
+        run: tflint -f compact
